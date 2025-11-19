@@ -6,7 +6,6 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=root
-      # === ADICIONE ESTAS DUAS LINHAS ===
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_HOST_AUTH_METHOD=trust # Diz ao Postgres para confiar na autenticação interna da rede Docker
       # ==================================

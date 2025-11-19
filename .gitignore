@@ -1,3 +1,27 @@
 pkg
 main
 postgres-data
+# Arquivos de Sistema e Configuração
+.bash_history
+.bash_profile
+
+# Arquivos Android/ADB
+.android/adbkey
+.android/adbkey.pub
+.android/adb_usb.ini
+
+# Arquivos do VirtualBox
+.Ld9VirtualBox/
+.VirtualBox/
+
+# Caches e Logs de Dependências (Ruby/Bundler)
+.bundle/
+
+# Arquivos AWS/AmazonQ (Logs de IA e Configurações de Estado)
+.aws/amazonq/
+
+# Logs Genéricos
+*.log
+
+# Arquivos Temporários de Bloqueio (Embora o .lock já esteja na pasta .git, é bom garantir)
+*.lock
