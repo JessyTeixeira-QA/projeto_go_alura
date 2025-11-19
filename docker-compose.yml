@@ -1,0 +1,48 @@
+services:
+  # Serviço do PostgreSQL
+  postgres:
+    image: "postgres:16"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+      # === ADICIONE ESTAS DUAS LINHAS ===
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_HOST_AUTH_METHOD=trust # Diz ao Postgres para confiar na autenticação interna da rede Docker
+      # ==================================
+    ports: # Opcional, apenas se quiser acessar o DB de fora do Docker
+      - 5432:5432
+    volumes:
+      # O volume deve referenciar o diretório PGDATA
+      - ./postgres-data-new:/var/lib/postgresql/data/pgdata 
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Serviço da aplicação Go
+  app:
+    image: golang:1.22
+    volumes:
+      - ./:/app
+    working_dir: /app
+    ports:
+      - 8080:8080
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=root
+      - DB_PORT=5432
+
+    # === CONFIGURAÇÕES CORRETAS PARA MANTER O CONTÊINER ABERTO ===
+    tty: true
+    stdin_open: true
+    command: tail -f /dev/null
+    # ============================================================
+
+    depends_on:
+      # Apenas a condição de dependência e saúde do serviço
+      postgres:
+        condition: service_healthy
