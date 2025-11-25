@@ -29,7 +29,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - DB_HOST=postgres
+      - DB_HOST=polocalhost
       - DB_USER=root
       - DB_PASSWORD=root
       - DB_NAME=root
