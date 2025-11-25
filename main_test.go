@@ -18,7 +18,10 @@ import (
 
 var ID int
 
+// --- Configuração ---
+
 func SetupDasRotasDeTeste() *gin.Engine {
+	// Define o modo Release para evitar logs verbosos durante os testes
 	gin.SetMode(gin.ReleaseMode)
 	rotas := gin.Default()
 	return rotas
@@ -32,18 +35,26 @@ func CriaAlunoMock() {
 
 func DeletaAlunoMock() {
 	var aluno models.Aluno
+	// Usa o ID criado para deletar
 	database.DB.Delete(&aluno, ID)
 }
+
+// --- Testes de Handler ---
 
 func TestVerificaStatusCodeDaSaudacaoComParametro(t *testing.T) {
 	r := SetupDasRotasDeTeste()
 	r.GET("/:nome", controllers.Saudacoes)
-	req, _ := http.NewRequest("GET", "/gui", nil)
+	req, err := http.NewRequest("GET", "/gui", nil)
+	assert.Nil(t, err, "Erro ao criar request deve ser nulo")
+
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
+
+	// Verificações
 	assert.Equal(t, http.StatusOK, resposta.Code, "Deveriam ser iguais")
 	mockDaResposta := `{"API diz":"E ai gui, Tudo beleza?"}`
-	respostaBody, _ := ioutil.ReadAll(resposta.Body)
+	respostaBody, err := ioutil.ReadAll(resposta.Body)
+	assert.Nil(t, err, "Erro ao ler corpo da resposta deve ser nulo")
 	assert.Equal(t, mockDaResposta, string(respostaBody))
 }
 
@@ -75,29 +86,41 @@ func TestBuscaAlunoPorIDHandler(t *testing.T) {
 	database.ConectaComBancoDeDados()
 	CriaAlunoMock()
 	defer DeletaAlunoMock()
+
 	r := SetupDasRotasDeTeste()
 	r.GET("/alunos/:id", controllers.BuscarAlunoPorID)
 	pathDaBusca := "/alunos/" + strconv.Itoa(ID)
+
 	req, _ := http.NewRequest("GET", pathDaBusca, nil)
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
+
 	var alunoMock models.Aluno
-	json.Unmarshal(resposta.Body.Bytes(), &alunoMock)
+	// CORREÇÃO: Tratamento de erro de json.Unmarshal
+	err := json.Unmarshal(resposta.Body.Bytes(), &alunoMock)
+	if err != nil {
+		t.Fatalf("falha ao decodificar JSON do corpo da resposta: %v", err)
+	}
+
+	assert.Equal(t, http.StatusOK, resposta.Code)
 	assert.Equal(t, "Nome do Aluno Teste", alunoMock.Nome, "Os nomes devem ser iguais")
 	assert.Equal(t, "12345678901", alunoMock.CPF)
 	assert.Equal(t, "123456789", alunoMock.RG)
-	assert.Equal(t, http.StatusOK, resposta.Code)
 }
 
 func TestDeletaAlunoHandler(t *testing.T) {
 	database.ConectaComBancoDeDados()
 	CriaAlunoMock()
+	// NOTE: Não usamos 'defer DeletaAlunoMock()' aqui, pois a função já é testada
+	// Para ser deletada. O mock é deletado dentro da função.
 	r := SetupDasRotasDeTeste()
 	r.DELETE("/alunos/:id", controllers.DeletarAluno)
 	pathDeBusca := "/alunos/" + strconv.Itoa(ID)
+
 	req, _ := http.NewRequest("DELETE", pathDeBusca, nil)
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
+
 	assert.Equal(t, http.StatusOK, resposta.Code)
 }
 
@@ -105,16 +128,27 @@ func TestEditaUmAlunoHandler(t *testing.T) {
 	database.ConectaComBancoDeDados()
 	CriaAlunoMock()
 	defer DeletaAlunoMock()
+
 	r := SetupDasRotasDeTeste()
 	r.PATCH("/alunos/:id", controllers.EditarAluno)
+
 	aluno := models.Aluno{Nome: "Nome do Aluno Teste", CPF: "47123456789", RG: "123456700"}
-	valorJson, _ := json.Marshal(aluno)
+	valorJson, err := json.Marshal(aluno)
+	assert.Nil(t, err, "Erro ao serializar JSON deve ser nulo")
+
 	pathParaEditar := "/alunos/" + strconv.Itoa(ID)
 	req, _ := http.NewRequest("PATCH", pathParaEditar, bytes.NewBuffer(valorJson))
 	resposta := httptest.NewRecorder()
 	r.ServeHTTP(resposta, req)
+
 	var alunoMockAtualizado models.Aluno
-	json.Unmarshal(resposta.Body.Bytes(), &alunoMockAtualizado)
+	// CORREÇÃO: Tratamento de erro de json.Unmarshal
+	err = json.Unmarshal(resposta.Body.Bytes(), &alunoMockAtualizado)
+	if err != nil {
+		t.Fatalf("falha ao decodificar JSON do corpo da resposta (aluno atualizado): %v", err)
+	}
+
+	assert.Equal(t, http.StatusOK, resposta.Code)
 	assert.Equal(t, "47123456789", alunoMockAtualizado.CPF)
 	assert.Equal(t, "123456700", alunoMockAtualizado.RG)
 	assert.Equal(t, "Nome do Aluno Teste", alunoMockAtualizado.Nome)

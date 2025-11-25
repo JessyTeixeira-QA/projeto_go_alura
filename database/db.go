@@ -1,13 +1,13 @@
 package database
 
 import (
-    "fmt" // Importe fmt para construir a string
-    "log"
-    "os"  // Importe os para ler variáveis de ambiente
+	"fmt" // Importe fmt para construir a string
+	"log"
+	"os" // Importe os para ler variáveis de ambiente
 
-    "github.com/guilhermeonrails/api-go-gin/models"
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+	"github.com/guilhermeonrails/api-go-gin/models"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -45,6 +45,6 @@ func ConectaComBancoDeDados() {
     // Se GORM.Open falhar, a conexão falhou, resolvendo o problema inicial.
 
     // 4. MIGRAÇÃO
-    DB.AutoMigrate(&models.Aluno{})
+    _ = DB.AutoMigrate(&models.Aluno{})
     log.Println("Conexão estabelecida e migração concluída com sucesso!")
 }

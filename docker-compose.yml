@@ -6,14 +6,14 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=root
+      # MANTENHA O PGDATA APONTANDO PARA O DIRETÓRIO INTERNO DO VOLUME
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_HOST_AUTH_METHOD=trust # Diz ao Postgres para confiar na autenticação interna da rede Docker
-      # ==================================
-    ports: # Opcional, apenas se quiser acessar o DB de fora do Docker
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
       - 5432:5432
     volumes:
-      # O volume deve referenciar o diretório PGDATA
-      - ./postgres-data-new:/var/lib/postgresql/data/pgdata 
+      # REFERÊNCIA AO VOLUME NOMEADO. É AQUI QUE O DOCKER GERENCIA AS PERMISSÕES.
+      - postgres_data:/var/lib/postgresql/data/pgdata
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "root"]
       interval: 10s
@@ -34,14 +34,20 @@ services:
       - DB_PASSWORD=root
       - DB_NAME=root
       - DB_PORT=5432
-
-    # === CONFIGURAÇÕES CORRETAS PARA MANTER O CONTÊINER ABERTO ===
+    
+    # Configuração para manter o contêiner rodando (bom para o exec)
     tty: true
     stdin_open: true
     command: tail -f /dev/null
-    # ============================================================
 
     depends_on:
-      # Apenas a condição de dependência e saúde do serviço
+      # Garante que o Go espere o Postgres estar saudável antes de iniciar
       postgres:
         condition: service_healthy
+
+# =======================================================
+# NOVA SEÇÃO DE VOLUMES NO NÍVEL RAIZ DO ARQUIVO
+# =======================================================
+volumes:
+  postgres_data:
+    # O Docker gerenciará este volume, evitando erros de permissão.
