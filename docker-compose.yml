@@ -29,7 +29,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - DB_HOST=polocalhost
+      - DB_HOST=localhost
       - DB_USER=root
       - DB_PASSWORD=root
       - DB_NAME=root
@@ -46,4 +46,5 @@ services:
         condition: service_healthy
 volumes:
   postgres_data:
+
     # O Docker vai gerenciar este volume, evitando erros de permissão.
