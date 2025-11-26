@@ -6,7 +6,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=root
-      # MANTENHA O PGDATA APONTANDO PARA O DIRETÓRIO INTERNO DO VOLUME
+      # MANTENHA O pata APONTANDO PARA O DIRETÓRIO INTERNO DO VOLUME
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
@@ -44,10 +44,6 @@ services:
       # Garante que o Go espere o Postgres estar saudável antes de iniciar
       postgres:
         condition: service_healthy
-
-# =======================================================
-# NOVA SEÇÃO DE VOLUMES NO NÍVEL RAIZ DO ARQUIVO
-# =======================================================
 volumes:
   postgres_data:
-    # O Docker gerenciará este volume, evitando erros de permissão.
+    # O Docker vai gerenciar este volume, evitando erros de permissão.
