@@ -1,112 +1,112 @@
-# 🎓 API de Gerenciamento de Alunos com Go e Gin (Alura)
+# 🎓 Student Management API with Go and Gin (Alura)
 
-Este repositório contém o projeto de uma **API RESTful** desenvolvida em **Go** (Golang) utilizando o framework **Gin** para o roteamento e o **GORM** como ORM para persistência de dados em um banco **PostgreSQL**.
+This repository contains the project of a **RESTful API** developed in **Go** (Golang) using the **Gin** framework for routing and **GORM** as the ORM for data persistence in a **PostgreSQL** database.
 
-O projeto foi estruturado para demonstrar a criação de uma aplicação completa, com foco em:
-*   **Boas Práticas de Desenvolvimento:** Separação de responsabilidades (Controllers, Models, Database, Routes).
-*   **Validação de Dados:** Uso de *struct tags* e a biblioteca `gopkg.in/validator.v2` para garantir a integridade dos dados.
-*   **Contêineres:** Configuração completa com `Dockerfile` e `docker-compose.yml` para um ambiente de desenvolvimento e produção isolado.
+The project is structured to demonstrate the creation of a complete application, focusing on:
+*   **Development Best Practices:** Separation of concerns (Controllers, Models, Database, Routes).
+*   **Data Validation:** Use of struct tags and the `gopkg.in/validator.v2` library to ensure data integrity.
+*   **Containers:** Complete setup with `Dockerfile` and `docker-compose.yml` for an isolated development and production environment.
 
-## 🚀 Funcionalidades
+## 🚀 Features
 
-A API permite o gerenciamento completo de registros de alunos (CRUD - Create, Read, Update, Delete).
+The API enables full management of student records (CRUD - Create, Read, Update, Delete).
 
-| Rota | Método | Descrição | Controller |
+| Route | Method | Description | Controller |
 | :--- | :--- | :--- | :--- |
-| `/` | `GET` | Retorna o status da API. | N/A |
-| `/ping` | `GET` | Health Check simples (retorna "pong"). | N/A |
-| `/alunos` | `GET` | Lista todos os alunos cadastrados. | `TodosAlunos` |
-| `/alunos` | `POST` | Cria um novo aluno. Requer validação de `Nome`, `RG` (9 dígitos) e `CPF` (11 dígitos). | `CriarNovoAluno` |
-| `/alunos/:id` | `GET` | Busca um aluno pelo ID. | `BuscarAlunoPorID` |
-| `/alunos/:id` | `PATCH` | Atualiza os dados de um aluno pelo ID. | `EditarAluno` |
-| `/alunos/:id` | `DELETE` | Deleta um aluno pelo ID. | `DeletarAluno` |
-| `/alunos/cpf/:cpf` | `GET` | Busca um aluno pelo número de CPF. | `BuscaAlunoPorCPF` |
-| `/alunos/saudacao/:nome` | `GET` | Rota de exemplo que retorna uma saudação personalizada. | `Saudacoes` |
-| `/index` | `GET` | Exibe uma página HTML simples com a lista de alunos (View). | `ExibePaginaIndex` |
+| `/` | `GET` | Returns the API status. | N/A |
+| `/ping` | `GET` | Simple health check (returns "pong"). | N/A |
+| `/alunos` | `GET` | Lists all registered students. | `TodosAlunos` |
+| `/alunos` | `POST` | Creates a new student. Requires validation of `Nome`, `RG` (9 digits), and `CPF` (11 digits). | `CriarNovoAluno` |
+| `/alunos/:id` | `GET` | Retrieves a student by ID. | `BuscarAlunoPorID` |
+| `/alunos/:id` | `PATCH` | Updates a student's data by ID. | `EditarAluno` |
+| `/alunos/:id` | `DELETE` | Deletes a student by ID. | `DeletarAluno` |
+| `/alunos/cpf/:cpf` | `GET` | Retrieves a student by CPF number. | `BuscaAlunoPorCPF` |
+| `/alunos/saudacao/:nome` | `GET` | Example route that returns a personalized greeting. | `Saudacoes` |
+| `/index` | `GET` | Displays a simple HTML page with the list of students (View). | `ExibePaginaIndex` |
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Technologies Used
 
-*   **Linguagem:** Go (Golang)
-*   **Framework Web:** [Gin Gonic](https://github.com/gin-gonic/gin)
+*   **Language:** Go (Golang)
+*   **Web Framework:** [Gin Gonic](https://github.com/gin-gonic/gin)
 *   **ORM:** [GORM](https://gorm.io/)
-*   **Banco de Dados:** PostgreSQL
-*   **Contêineres:** Docker e Docker Compose
+*   **Database:** PostgreSQL
+*   **Containers:** Docker and Docker Compose
 
-## ⚙️ Configuração do Ambiente
+## ⚙️ Environment Setup
 
-O projeto utiliza **Docker Compose** para orquestrar a aplicação Go e o banco de dados PostgreSQL, facilitando a configuração do ambiente.
+The project uses **Docker Compose** to orchestrate the Go application and the PostgreSQL database, simplifying environment setup.
 
-### Pré-requisitos
+### Prerequisites
 
-Certifique-se de ter o [Docker](https://www.docker.com/get-started) e o [Docker Compose](https://docs.docker.com/compose/install/) instalados em sua máquina.
+Make sure you have [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
 
-### 1. Clonar o Repositório
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/guilhermeonrails/api-go-gin.git
 cd api-go-gin
 ```
 
-### 2. Iniciar a Aplicação
+### 2. Start the Application
 
-Execute o comando abaixo para construir as imagens e iniciar os contêineres:
+Run the following command to build the images and start the containers:
 
 ```bash
 docker-compose up --build
 ```
 
-O Docker Compose irá:
-1.  Construir a imagem da aplicação Go (`app`) usando o `Dockerfile`.
-2.  Iniciar o contêiner do PostgreSQL (`postgres`), aguardando que ele esteja saudável.
-3.  Iniciar o contêiner da aplicação Go, que se conectará ao banco de dados e executará as migrações (criação da tabela `alunos`).
+Docker Compose will:
+1.  Build the Go application image (`app`) using the `Dockerfile`.
+2.  Start the PostgreSQL container (`postgres`), waiting until it is healthy.
+3.  Start the Go application container, which will connect to the database and run migrations (creating the `alunos` table).
 
-A aplicação estará acessível em `http://localhost:8080`.
+The application will be accessible at `http://localhost:8080`.
 
-### 3. Variáveis de Ambiente
+### 3. Environment Variables
 
-A conexão com o banco de dados é configurada através de variáveis de ambiente definidas no `docker-compose.yml` e lidas pelo arquivo `database/db.go`.
+The database connection is configured through environment variables defined in `docker-compose.yml` and read by the `database/db.go` file.
 
-| Variável | Valor Padrão | Descrição |
+| Variable | Default Value | Description |
 | :--- | :--- | :--- |
-| `DB_HOST` | `postgres` | Nome do serviço do banco de dados no Docker Compose. |
-| `DB_USER` | `root` | Usuário do PostgreSQL. |
-| `DB_PASSWORD` | `root` | Senha do PostgreSQL. |
-| `DB_NAME` | `root` | Nome do banco de dados. |
-| `DB_PORT` | `5432` | Porta do PostgreSQL. |
+| `DB_HOST` | `postgres` | Database service name in Docker Compose. |
+| `DB_USER` | `root` | PostgreSQL user. |
+| `DB_PASSWORD` | `root` | PostgreSQL password. |
+| `DB_NAME` | `root` | Database name. |
+| `DB_PORT` | `5432` | PostgreSQL port. |
 
-## 💻 Como Rodar Localmente (Sem Docker)
+## 💻 Running Locally (Without Docker)
 
-Se preferir rodar a aplicação diretamente em sua máquina, siga os passos:
+If you prefer to run the application directly on your machine, follow these steps:
 
-### Pré-requisitos
+### Prerequisites
 
-*   [Go (versão 1.24 ou superior)](https://golang.org/dl/)
-*   Um servidor PostgreSQL rodando localmente.
+*   [Go (version 1.24 or higher)](https://golang.org/dl/)
+*   A PostgreSQL server running locally.
 
-### 1. Configurar o Banco de Dados
+### 1. Configure the Database
 
-Crie um banco de dados PostgreSQL e configure as variáveis de ambiente necessárias para a conexão (substitua pelos seus dados):
+Create a PostgreSQL database and set the required environment variables for the connection (replace with your own credentials):
 
 ```bash
 export DB_HOST=localhost
-export DB_USER=seu_usuario
-export DB_PASSWORD=sua_senha
-export DB_NAME=seu_banco
+export DB_USER=your_username
+export DB_PASSWORD=your_password
+export DB_NAME=your_database
 export DB_PORT=5432
 ```
 
-### 2. Instalar Dependências e Rodar
+### 2. Install Dependencies and Run
 
 ```bash
 go mod tidy
 go run main.go
 ```
 
-A aplicação será iniciada na porta `8080`.
+The application will start on port `8080`.
 
-## 📝 Exemplo de Uso da API (POST)
+## 📝 API Usage Example (POST)
 
-Para criar um novo aluno, envie uma requisição `POST` para a rota `/alunos` com um corpo JSON no formato:
+To create a new student, send a `POST` request to the `/alunos` route with a JSON body in the following format:
 
 ```json
 {
@@ -116,7 +116,7 @@ Para criar um novo aluno, envie uma requisição `POST` para a rota `/alunos` co
 }
 ```
 
-**Exemplo com `curl`:**
+**Example using `curl`:**
 
 ```bash
 curl -X POST http://localhost:8080/alunos \
